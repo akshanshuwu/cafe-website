@@ -10,7 +10,7 @@ const Features: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-cafe-green text-white">
+    <section id="features" className="py-24 bg-cafe-green text-white">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 text-center">
           {features.map((f, i) => (
