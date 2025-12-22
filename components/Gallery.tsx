@@ -1,5 +1,33 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+
+const LazyGalleryImage: React.FC<{ src: string; alt: string; index: number }> = ({ src, alt, index }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const placeholderSrc = `${src}&w=50&blur=10`; // Low-res blurred version for placeholder
+
+  return (
+    <div className="relative overflow-hidden rounded-xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-stone-100">
+      <img
+        src={placeholderSrc}
+        alt={alt}
+        className="w-full h-auto object-cover blur-lg scale-110"
+        aria-hidden="true"
+      />
+      <img 
+        src={src} 
+        alt={alt} 
+        loading="lazy"
+        onLoad={() => setIsLoaded(true)}
+        className={`absolute inset-0 w-full h-auto object-cover transform group-hover:scale-110 transition-all duration-700 ease-in-out ${
+          isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+        }`}
+      />
+      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+        <p className="text-white font-serif italic text-lg">@samplecafe</p>
+      </div>
+    </div>
+  );
+};
 
 const Gallery: React.FC = () => {
   const images = [
@@ -21,16 +49,7 @@ const Gallery: React.FC = () => {
         
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
           {images.map((src, i) => (
-            <div key={i} className="relative overflow-hidden rounded-xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
-              <img 
-                src={src} 
-                alt={`Cafe Gallery ${i}`} 
-                className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <p className="text-white font-serif italic text-lg">@samplecafe</p>
-              </div>
-            </div>
+            <LazyGalleryImage key={i} src={src} alt={`Cafe Gallery ${i}`} index={i} />
           ))}
         </div>
       </div>
