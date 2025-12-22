@@ -63,8 +63,16 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
 
   const getTextColor = () => {
     if (isMenuOpen) return 'text-white';
-    if (!isScrolled) return 'text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]';
-    return isDarkTheme ? 'text-white' : 'text-cafe-green';
+    
+    // When the user has scrolled down
+    if (isScrolled) {
+      // Use white text if we are currently over a dark background section (Home or Features)
+      // Use green text if we are over any other (light) section
+      return isDarkTheme ? 'text-white' : 'text-cafe-green';
+    }
+
+    // Default state: Transparent navbar at the top of the page (Hero section)
+    return 'text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]';
   };
 
   // Dedicated function for the hamburger bars to ensure color is always solid

@@ -1,8 +1,5 @@
 {
   "name": "Sample Cafe",
-  "description": "A premium, aesthetic single-page website for an urban café featuring a modern design, coffee-focused menu, and a Gemini-powered personal barista assistant.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
+  "description": "A premium, aesthetic single-page website for an urban café featuring a modern design and coffee-focused menu.",
+  "requestFramePermissions": []
 }

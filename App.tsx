@@ -9,7 +9,6 @@ import Features from './components/Features';
 import Timings from './components/Timings';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import CoffeeAIAssistant from './components/CoffeeAIAssistant';
 
 const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -61,7 +60,6 @@ const App: React.FC = () => {
         <Contact />
       </main>
       <Footer />
-      <CoffeeAIAssistant />
     </div>
   );
 };

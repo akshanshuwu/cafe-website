@@ -1,9 +1,7 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 
 const Contact: React.FC = () => {
-  const [mapActive, setMapActive] = useState(false);
-
   return (
     <section id="contact" className="py-24 bg-cafe-cream relative">
       <div className="container mx-auto px-6">
@@ -45,26 +43,18 @@ const Contact: React.FC = () => {
             </div>
           </div>
           <div 
-            className="lg:w-2/3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl relative group reveal-on-scroll"
-            onClick={() => setMapActive(true)}
-            onMouseLeave={() => setMapActive(false)}
+            className="lg:w-2/3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl relative group reveal-on-scroll bg-stone-200"
           >
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.835434509374!2d-122.4194155!3d37.7749295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80859a6d00690021%3A0x4a501367f076adff!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0, pointerEvents: mapActive ? 'auto' : 'none' }} 
-              allowFullScreen 
-              loading="lazy"
-              title="Cafe Location Map"
-            ></iframe>
-            {!mapActive && (
-              <div className="absolute inset-0 bg-cafe-green/5 backdrop-blur-[2px] flex items-center justify-center cursor-pointer md:hidden">
-                <div className="bg-white/90 px-6 py-3 rounded-full text-cafe-green text-sm font-bold uppercase tracking-widest shadow-xl">
-                  Tap to interact with map
-                </div>
-              </div>
-            )}
+            <img 
+              src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=2066&auto=format&fit=crop" 
+              alt="Map Location Placeholder" 
+              className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-cafe-green/40 to-transparent"></div>
+            <div className="absolute bottom-10 left-10 text-white">
+              <h3 className="text-2xl font-serif italic mb-2">Visit our Sanctuary</h3>
+              <p className="text-sm uppercase tracking-widest opacity-80">123 Espresso Lane, City 90210</p>
+            </div>
             <div className="absolute inset-0 pointer-events-none border-[12px] border-white/5 rounded-3xl"></div>
           </div>
         </div>
