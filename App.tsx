@@ -6,6 +6,7 @@ import About from './components/About';
 import Menu from './components/Menu';
 import Gallery from './components/Gallery';
 import Features from './components/Features';
+import Timings from './components/Timings';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CoffeeAIAssistant from './components/CoffeeAIAssistant';
@@ -36,7 +37,7 @@ const App: React.FC = () => {
     observeElements();
     window.addEventListener('scroll', handleScroll);
     
-    // Re-run observation if content changes dynamically (optional but good practice)
+    // Re-run observation if content changes dynamically
     const mutationObserver = new MutationObserver(observeElements);
     mutationObserver.observe(document.body, { childList: true, subtree: true });
 
@@ -56,6 +57,7 @@ const App: React.FC = () => {
         <Menu />
         <Features />
         <Gallery />
+        <Timings />
         <Contact />
       </main>
       <Footer />

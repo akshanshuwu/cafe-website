@@ -7,8 +7,9 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
   const [activeSection, setActiveSection] = useState<string>('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Define which sections should trigger a "Dark" theme (White text, Green background)
+  // Sections that have a dark background (Hero and Features)
   const darkSections = ['home', 'features'];
   const isDarkTheme = darkSections.includes(activeSection);
 
@@ -16,13 +17,14 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
     { name: 'About', id: 'about' },
     { name: 'Menu', id: 'menu' },
     { name: 'Gallery', id: 'gallery' },
+    { name: 'Hours', id: 'timings' },
     { name: 'Contact', id: 'contact' }
   ];
 
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '-20% 0px -70% 0px', // Adjust trigger point
+      rootMargin: '-30% 0px -60% 0px', // More aggressive margin for mobile
       threshold: 0
     };
 
@@ -34,9 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
       });
     }, options);
 
-    // Track nav items + the home and features sections for theme switching
     const sectionsToObserve = [...navItems.map(i => i.id), 'home', 'features'];
-    
     sectionsToObserve.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
@@ -45,73 +45,110 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
     return () => observer.disconnect();
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleNavClick = (id: string) => {
+    setIsMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Determine navbar background based on scroll and theme
   const getNavBackground = () => {
-    if (!isScrolled) return 'bg-transparent py-6';
+    if (isMenuOpen) return 'bg-cafe-green';
+    if (!isScrolled) return 'bg-transparent py-5 md:py-6';
     return isDarkTheme 
-      ? 'bg-cafe-green/95 backdrop-blur-md py-4 shadow-lg' 
-      : 'bg-cafe-beige/95 backdrop-blur-md py-4 shadow-sm';
+      ? 'bg-cafe-green/95 backdrop-blur-md py-4 shadow-xl' 
+      : 'bg-cafe-beige/95 backdrop-blur-md py-4 shadow-md';
   };
 
-  // Determine text color
   const getTextColor = () => {
-    if (!isScrolled) return 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]';
+    if (isMenuOpen) return 'text-white';
+    if (!isScrolled) return 'text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]';
     return isDarkTheme ? 'text-white' : 'text-cafe-green';
   };
 
+  // Dedicated function for the hamburger bars to ensure color is always solid
+  const getHamburgerBg = () => {
+    if (isMenuOpen) return 'bg-white';
+    if (!isScrolled) return 'bg-white shadow-[0_2px_4px_rgba(0,0,0,0.5)]';
+    return isDarkTheme ? 'bg-white' : 'bg-cafe-green';
+  };
+
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${getNavBackground()}`}>
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        <a 
-          href="javascript:void(0)" 
-          onClick={(e) => handleNavClick(e, 'home')}
-          className={`text-2xl font-bold tracking-tighter transition-all duration-500 hover:tracking-normal ${getTextColor()}`}
-        >
-          sample cafe
-        </a>
-        
-        <div className="hidden md:flex space-x-10 items-center">
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              href="javascript:void(0)"
-              onClick={(e) => handleNavClick(e, item.id)}
-              className={`group relative text-xs font-bold uppercase tracking-[0.3em] transition-all duration-300 ${getTextColor()} ${
-                activeSection === item.id ? 'opacity-100' : 'opacity-70 hover:opacity-100 hover:tracking-[0.4em]'
+    <>
+      <nav className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${getNavBackground()}`}>
+        <div className="container mx-auto px-6 flex justify-between items-center">
+          <button 
+            onClick={() => handleNavClick('home')}
+            className={`text-2xl md:text-2xl font-bold tracking-tighter transition-all duration-500 hover:tracking-normal outline-none z-[110] ${getTextColor()}`}
+          >
+            sample cafe
+          </button>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex space-x-10 items-center">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`group relative text-xs font-bold uppercase tracking-[0.3em] transition-all duration-300 ${getTextColor()} ${
+                  activeSection === item.id ? 'opacity-100' : 'opacity-70 hover:opacity-100'
+                }`}
+              >
+                {item.name}
+                <span className={`absolute -bottom-1 left-0 h-[2px] bg-current transition-all duration-500 ease-out ${
+                  activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}></span>
+              </button>
+            ))}
+            <button
+              onClick={() => handleNavClick('contact')}
+              className={`px-8 py-2.5 border rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-500 hover:scale-105 active:scale-95 ${
+                isScrolled 
+                  ? (isDarkTheme 
+                      ? 'border-white text-white hover:bg-white hover:text-cafe-green' 
+                      : 'border-cafe-green text-cafe-green hover:bg-cafe-green hover:text-white')
+                  : 'border-white text-white bg-black/10 backdrop-blur-sm hover:bg-white hover:text-cafe-green'
               }`}
             >
-              {item.name}
-              {/* Active Underline Indicator */}
-              <span className={`absolute -bottom-1 left-0 h-[2px] bg-current transition-all duration-500 ease-out ${
-                activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-1/2'
-              }`}></span>
-            </a>
-          ))}
-          <a
-            href="javascript:void(0)"
-            onClick={(e) => handleNavClick(e, 'contact')}
-            className={`px-8 py-2.5 border rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-500 hover:scale-105 active:scale-95 ${
-              isScrolled 
-                ? (isDarkTheme 
-                    ? 'border-white text-white hover:bg-white hover:text-cafe-green' 
-                    : 'border-cafe-green text-cafe-green hover:bg-cafe-green hover:text-white')
-                : 'border-white text-white bg-black/10 backdrop-blur-sm hover:bg-white hover:text-cafe-green shadow-xl'
-            }`}
+              Visit Us
+            </button>
+          </div>
+
+          {/* Mobile Toggle Button */}
+          <button 
+            className="md:hidden flex flex-col justify-center items-end gap-1.5 w-10 h-10 focus:outline-none z-[110]"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle Menu"
           >
-            Visit Us
-          </a>
+            <span className={`w-7 h-[3px] rounded-full transition-all duration-300 ${getHamburgerBg()} ${isMenuOpen ? 'rotate-45 translate-y-[9px]' : ''}`}></span>
+            <span className={`w-5 h-[3px] rounded-full transition-all duration-300 ${getHamburgerBg()} ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`w-7 h-[3px] rounded-full transition-all duration-300 ${getHamburgerBg()} ${isMenuOpen ? '-rotate-45 -translate-y-[9px]' : ''}`}></span>
+          </button>
         </div>
+      </nav>
+
+      {/* Mobile Overlay */}
+      <div className={`fixed inset-0 bg-cafe-green z-[90] transition-all duration-700 cubic-bezier(0.77, 0, 0.175, 1) md:hidden flex flex-col items-center justify-center space-y-10 ${
+        isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
+      }`}>
+        {navItems.map((item, index) => (
+          <button
+            key={item.id}
+            onClick={() => handleNavClick(item.id)}
+            className={`text-white text-4xl font-serif italic tracking-wide transition-all duration-500 ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          >
+            {item.name}
+          </button>
+        ))}
+        <button
+          onClick={() => handleNavClick('contact')}
+          className={`px-12 py-4 bg-white text-cafe-green rounded-full text-lg font-bold uppercase tracking-widest shadow-2xl transition-all duration-500 ${isMenuOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
+        >
+          Visit Us
+        </button>
       </div>
-    </nav>
+    </>
   );
 };
 

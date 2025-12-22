@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 const Menu: React.FC = () => {
-  const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
 
   const categories = [
     {
@@ -38,39 +38,38 @@ const Menu: React.FC = () => {
   ];
 
   return (
-    <section id="menu" className="pt-20 pb-32 bg-cafe-cream overflow-hidden">
+    <section id="menu" className="pt-20 pb-32 bg-cafe-cream relative">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-20 reveal-on-scroll">
+        <div className="text-center mb-16 md:mb-20 reveal-on-scroll">
           <span className="text-cafe-brown uppercase tracking-[0.4em] text-xs font-bold mb-4 block">Selection</span>
-          <h2 className="text-5xl md:text-6xl font-bold text-cafe-green mb-6">Curated Menu</h2>
+          <h2 className="text-4xl md:text-6xl font-bold text-cafe-green mb-6">Curated Menu</h2>
           <div className="max-w-2xl mx-auto">
-            <p className="text-stone-600 text-lg leading-relaxed mb-8">
-              From our <span className="italic font-serif text-cafe-brown">signature</span> house roasts to our carefully whisked ceremony-grade matchas, every item on our menu is a celebration of purity. We source seasonally, brew precisely, and serve with intention.
+            <p className="text-stone-600 text-base md:text-lg leading-relaxed">
+              Seasonal roasts and precisely whisked ceremony-grade matchas. Every item is a celebration of purity and intention.
             </p>
           </div>
-          <div className="w-16 h-1 bg-cafe-brown/20 mx-auto mt-4"></div>
+          <div className="w-16 h-1 bg-cafe-brown/20 mx-auto mt-6"></div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {categories.map((cat, idx) => (
             <div 
               key={idx} 
-              onMouseEnter={() => setHoveredCategory(idx)}
-              onMouseLeave={() => setHoveredCategory(null)}
-              className={`bg-white p-12 rounded-3xl shadow-sm transition-all duration-700 reveal-on-scroll ${
-                hoveredCategory !== null && hoveredCategory !== idx ? 'opacity-40 scale-[0.98] grayscale-[0.5]' : 'opacity-100 scale-100'
-              }`}
+              onClick={() => setActiveCategory(activeCategory === idx ? null : idx)}
+              className={`bg-white p-8 md:p-12 rounded-3xl shadow-sm transition-all duration-500 reveal-on-scroll ${
+                activeCategory !== null && activeCategory !== idx ? 'md:opacity-40 md:scale-[0.98]' : 'opacity-100 scale-100'
+              } ${activeCategory === idx ? 'ring-2 ring-cafe-green/5 ring-inset' : ''}`}
             >
-              <h3 className="text-2xl font-bold text-cafe-brown mb-10 border-b border-cafe-cream pb-6 flex justify-between items-center group">
+              <h3 className="text-xl md:text-2xl font-bold text-cafe-brown mb-8 border-b border-cafe-cream pb-6 flex justify-between items-center group">
                 {cat.title}
-                <span className="text-xs font-light opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-2 group-hover:translate-x-0 italic">Fresh</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-cafe-green opacity-40 italic">Select</span>
               </h3>
-              <ul className="space-y-8">
+              <ul className="space-y-6 md:space-y-8">
                 {cat.items.map((item, i) => (
-                  <li key={i} className="group cursor-default flex flex-col relative overflow-hidden">
-                    <span className="text-stone-800 font-medium group-hover:text-cafe-green transition-colors duration-300 translate-x-0 group-hover:translate-x-2">{item.name}</span>
-                    <span className="text-stone-400 text-[10px] mt-1 uppercase tracking-[0.15em] opacity-80 group-hover:opacity-100 group-hover:text-cafe-brown transition-all duration-500 transform translate-x-0 group-hover:translate-x-2">{item.desc}</span>
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-cafe-green transition-all duration-300 group-hover:h-3/4"></div>
+                  <li key={i} className="group flex flex-col relative pl-4">
+                    <span className="text-stone-800 font-medium">{item.name}</span>
+                    <span className="text-stone-400 text-[10px] mt-1 uppercase tracking-[0.15em]">{item.desc}</span>
+                    <div className="absolute left-0 top-1.5 bottom-1.5 w-0.5 bg-cafe-green opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   </li>
                 ))}
               </ul>
@@ -78,8 +77,8 @@ const Menu: React.FC = () => {
           ))}
         </div>
         
-        <div className="mt-20 text-center reveal-on-scroll">
-          <p className="text-stone-400 italic text-lg font-serif">Seasonal rotations updated weekly. Ask our barista about today's roast.</p>
+        <div className="mt-16 text-center reveal-on-scroll">
+          <p className="text-stone-400 italic text-base md:text-lg font-serif">Seasonal rotations updated weekly. Ask our barista about today's roast.</p>
         </div>
       </div>
     </section>
