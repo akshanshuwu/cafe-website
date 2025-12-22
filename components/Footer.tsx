@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const Footer: React.FC = () => {
@@ -12,7 +11,7 @@ const Footer: React.FC = () => {
           
           <div className="flex space-x-8">
             <a href="#" className="text-stone-400 hover:text-cafe-brown transition-colors">Instagram</a>
-            <a href="#" className="text-stone-400 hover:text-cafe-brown transition-colors">Google Maps</a>
+            <a href="#contact" className="text-stone-400 hover:text-cafe-brown transition-colors">Our Location</a>
             <a href="#" className="text-stone-400 hover:text-cafe-brown transition-colors">Pinterest</a>
           </div>
           
