@@ -17,8 +17,34 @@ const App: React.FC = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
+
+    // Global Scroll Reveal Observer
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    const observeElements = () => {
+      const elements = document.querySelectorAll('.reveal-on-scroll');
+      elements.forEach(el => revealObserver.observe(el));
+    };
+
+    // Initial check and observe
+    observeElements();
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // Re-run observation if content changes dynamically (optional but good practice)
+    const mutationObserver = new MutationObserver(observeElements);
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      revealObserver.disconnect();
+      mutationObserver.disconnect();
+    };
   }, []);
 
   return (

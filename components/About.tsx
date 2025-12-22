@@ -1,24 +1,7 @@
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 const About: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.15 });
-
-    const items = sectionRef.current?.querySelectorAll('.reveal-on-scroll');
-    items?.forEach(item => observer.observe(item));
-
-    return () => observer.disconnect();
-  }, []);
-
   const values = [
     {
       title: 'Ethical Sourcing',
@@ -50,9 +33,9 @@ const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="py-32 bg-cafe-beige overflow-hidden">
+    <section id="about" className="pt-32 pb-16 bg-cafe-beige overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-32">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-24">
           <div className="lg:w-1/2 relative">
             <div className="reveal-on-scroll">
               <div className="relative z-0 overflow-hidden rounded-2xl group shadow-2xl">
@@ -64,8 +47,7 @@ const About: React.FC = () => {
               </div>
             </div>
             
-            {/* Floating Quote Card - Repositioned and z-index fixed */}
-            <div className="absolute top-1/2 -right-8 lg:-right-12 z-20 hidden lg:block transform -translate-y-1/2 reveal-on-scroll delay-300">
+            <div className="absolute top-1/2 -right-8 lg:-right-12 z-20 hidden lg:block transform -translate-y-1/2 reveal-on-scroll">
                <div className="bg-white p-8 rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] border border-stone-100 max-w-[240px] hover:-translate-y-2 transition-transform duration-500 hover:shadow-[0_40px_70px_-12px_rgba(0,0,0,0.3)]">
                  <p className="text-cafe-brown font-serif italic text-base leading-relaxed">"The aroma of freshly roasted beans is the sound of the morning waking up."</p>
                  <div className="w-8 h-[1px] bg-cafe-brown/20 my-4"></div>
@@ -74,7 +56,7 @@ const About: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:w-1/2 reveal-on-scroll delay-200">
+          <div className="lg:w-1/2 reveal-on-scroll">
             <span className="text-cafe-brown uppercase tracking-[0.4em] text-xs font-bold mb-6 block">Legacy & Craft</span>
             <h2 className="text-5xl md:text-6xl font-bold text-cafe-green mb-8 leading-[1.1]">
               Crafting calm in a <span className="italic font-serif font-normal text-cafe-brown">restless</span> world.
@@ -99,9 +81,9 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-32">
+        <div className="grid md:grid-cols-3 gap-8">
           {values.map((value, idx) => (
-            <div key={idx} className="reveal-on-scroll bg-white p-12 rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-700 border border-stone-50 group" style={{ transitionDelay: `${idx * 150}ms` }}>
+            <div key={idx} className="reveal-on-scroll bg-white p-12 rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-700 border border-stone-50 group">
               <div className="w-14 h-14 bg-cafe-cream rounded-2xl flex items-center justify-center text-cafe-green mb-8 group-hover:bg-cafe-green group-hover:text-white group-hover:rotate-6 transition-all duration-500">
                 {value.icon}
               </div>
