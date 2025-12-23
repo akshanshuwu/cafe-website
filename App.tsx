@@ -13,29 +13,35 @@ const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    // 1. Mark JS as ready for CSS transitions
+    document.documentElement.classList.add('js-ready');
+
+    // 2. Hide loading shell if it's still there
+    const shell = document.getElementById('loading-shell');
+    if (shell) shell.classList.add('hidden');
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    // Global Scroll Reveal Observer
+    // 3. Setup Scroll Reveal
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          // Once visible, stop observing to save resources
           revealObserver.unobserve(entry.target);
         }
       });
     }, { 
-      threshold: 0.05, // Trigger as soon as 5% of the element is visible
-      rootMargin: '0px 0px -20px 0px' 
+      threshold: 0.05,
+      rootMargin: '0px 0px -50px 0px' 
     });
 
     const observeElements = () => {
       const elements = document.querySelectorAll('.reveal-on-scroll');
       elements.forEach(el => {
-        // If element is already in viewport on mount, show it immediately
         const rect = el.getBoundingClientRect();
+        // If already in view, show immediately
         if (rect.top < window.innerHeight && rect.bottom >= 0) {
           el.classList.add('visible');
         } else {
@@ -44,17 +50,20 @@ const App: React.FC = () => {
       });
     };
 
-    // Run initial observation
     observeElements();
     window.addEventListener('scroll', handleScroll, { passive: true });
     
-    // Safety: In case of dynamic content or hydration delays
-    const timer = setTimeout(observeElements, 500);
+    // 4. Fail-safe: Force reveal all after 1.5 seconds in case observer fails
+    const forceRevealTimer = setTimeout(() => {
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 1500);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       revealObserver.disconnect();
-      clearTimeout(timer);
+      clearTimeout(forceRevealTimer);
     };
   }, []);
 
