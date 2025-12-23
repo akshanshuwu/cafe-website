@@ -13,18 +13,18 @@ const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    // 1. Mark JS as ready for CSS transitions
-    document.documentElement.classList.add('js-ready');
-
-    // 2. Hide loading shell if it's still there
+    // 1. Instantly hide loading shell on mount
     const shell = document.getElementById('loading-shell');
-    if (shell) shell.classList.add('hidden');
+    if (shell) {
+      shell.classList.add('hidden');
+      setTimeout(() => shell.remove(), 1000); // Cleanup after fade
+    }
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    // 3. Setup Scroll Reveal
+    // 2. Setup Scroll Reveal with safer defaults
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -33,42 +33,23 @@ const App: React.FC = () => {
         }
       });
     }, { 
-      threshold: 0.05,
+      threshold: 0.1,
       rootMargin: '0px 0px -50px 0px' 
     });
 
-    const observeElements = () => {
-      const elements = document.querySelectorAll('.reveal-on-scroll');
-      elements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        // If already in view, show immediately
-        if (rect.top < window.innerHeight && rect.bottom >= 0) {
-          el.classList.add('visible');
-        } else {
-          revealObserver.observe(el);
-        }
-      });
-    };
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => revealObserver.observe(el));
 
-    observeElements();
     window.addEventListener('scroll', handleScroll, { passive: true });
     
-    // 4. Fail-safe: Force reveal all after 1.5 seconds in case observer fails
-    const forceRevealTimer = setTimeout(() => {
-      document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-        el.classList.add('visible');
-      });
-    }, 1500);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       revealObserver.disconnect();
-      clearTimeout(forceRevealTimer);
     };
   }, []);
 
   return (
-    <div className="min-h-screen selection:bg-cafe-brown selection:text-white">
+    <div className="min-h-screen selection:bg-cafe-brown selection:text-white overflow-x-hidden">
       <Navbar isScrolled={scrolled} />
       <main>
         <Hero />
