@@ -30,7 +30,6 @@
       .text-cafe-green { color: #1B3022; }
       .bg-cafe-green { background-color: #1B3022; }
 
-      /* Improved Reveal Animations */
       .reveal-on-scroll {
         opacity: 0;
         transform: translateY(30px);
@@ -86,6 +85,24 @@
   }
 }
 </script>
+
+    <script type="module">
+      // Global failsafe: If anything crashes during module loading, remove the loader
+      window.addEventListener('error', () => {
+        const shell = document.getElementById('loading-shell');
+        if (shell) shell.classList.add('hidden');
+      }, true);
+      
+      // Secondary failsafe: If the app hasn't loaded in 5 seconds, force hide loader
+      setTimeout(() => {
+        const shell = document.getElementById('loading-shell');
+        if (shell && !shell.classList.contains('hidden')) {
+          console.warn('App took too long to load. Force hiding loader.');
+          shell.classList.add('hidden');
+        }
+      }, 5000);
+    </script>
+
     <script type="module" src="./index.tsx"></script>
   </head>
   <body class="bg-cafe-beige text-stone-800">
