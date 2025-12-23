@@ -13,7 +13,7 @@ const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    // 1. Instantly hide loading shell on mount
+    // Hide the loader immediately when the main component mounts
     const shell = document.getElementById('loading-shell');
     if (shell) {
       shell.classList.add('hidden');
@@ -23,7 +23,6 @@ const App: React.FC = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    // 2. Setup Scroll Reveal
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
