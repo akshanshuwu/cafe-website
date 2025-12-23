@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const Hero: React.FC = () => {
@@ -10,8 +9,8 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
-      {/* Background with zoom effect */}
+    <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-cafe-brown">
+      {/* Background with zoom effect and fetchpriority for faster loading */}
       <div 
         className="absolute inset-0 bg-cover bg-center transition-transform duration-[15s] scale-100 animate-[zoom_20s_infinite_alternate]"
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop")' }}

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -23,27 +22,39 @@ const App: React.FC = () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          // Once visible, stop observing to save resources
+          revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    }, { 
+      threshold: 0.05, // Trigger as soon as 5% of the element is visible
+      rootMargin: '0px 0px -20px 0px' 
+    });
 
     const observeElements = () => {
       const elements = document.querySelectorAll('.reveal-on-scroll');
-      elements.forEach(el => revealObserver.observe(el));
+      elements.forEach(el => {
+        // If element is already in viewport on mount, show it immediately
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom >= 0) {
+          el.classList.add('visible');
+        } else {
+          revealObserver.observe(el);
+        }
+      });
     };
 
-    // Initial check and observe
+    // Run initial observation
     observeElements();
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
-    // Re-run observation if content changes dynamically
-    const mutationObserver = new MutationObserver(observeElements);
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    // Safety: In case of dynamic content or hydration delays
+    const timer = setTimeout(observeElements, 500);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       revealObserver.disconnect();
-      mutationObserver.disconnect();
+      clearTimeout(timer);
     };
   }, []);
 
