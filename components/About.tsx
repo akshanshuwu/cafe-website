@@ -1,9 +1,17 @@
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 const LazyImage: React.FC<{ src: string; alt: string; className?: string }> = ({ src, alt, className }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  // Unsplash specific low-res placeholder
+  const prevSrc = useRef(src);
+
+  // Reset loaded state when src changes (critical for carousels)
+  useEffect(() => {
+    if (prevSrc.current !== src) {
+      setIsLoaded(false);
+      prevSrc.current = src;
+    }
+  }, [src]);
+
   const placeholderSrc = src.includes('?') ? `${src}&w=50&blur=10` : `${src}?w=50&blur=10`;
 
   return (
@@ -19,8 +27,8 @@ const LazyImage: React.FC<{ src: string; alt: string; className?: string }> = ({
         alt={alt}
         loading="lazy"
         onLoad={() => setIsLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
+        className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${
+          isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
         }`}
       />
     </div>
@@ -91,14 +99,14 @@ const About: React.FC = () => {
   ];
 
   const triggerTransition = useCallback((nextIdx: number) => {
-    if (isAnimating) return;
+    if (isAnimating || nextIdx === displayIndex) return;
     setIsAnimating(true);
     setTimeout(() => {
       setDisplayIndex(nextIdx);
       setActiveBestSeller(nextIdx);
       setIsAnimating(false);
-    }, 500); 
-  }, [isAnimating]);
+    }, 400); 
+  }, [isAnimating, displayIndex]);
 
   const handleNext = useCallback(() => {
     const nextIdx = (activeBestSeller + 1) % bestSellers.length;
@@ -113,14 +121,13 @@ const About: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       handleNext();
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, [handleNext]);
 
   return (
     <section id="about" className="pt-32 pb-16 bg-cafe-beige overflow-hidden">
       <div className="container mx-auto px-6">
-        {/* About Main Intro */}
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-32">
           <div className="lg:w-1/2 relative">
             <div className="reveal-on-scroll">
@@ -167,58 +174,12 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        {/* Detailed Story Subsection: The Genesis */}
-        <div className="mb-32 reveal-on-scroll">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <span className="text-stone-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-4 block">The Genesis</span>
-            <h3 className="text-4xl md:text-5xl font-bold text-cafe-green mb-10">Our Journey from Seed to Spirit</h3>
-            <div className="w-20 h-[1px] bg-cafe-brown/20 mx-auto"></div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-start">
-            <div className="space-y-8">
-              <h4 className="text-2xl font-serif text-cafe-brown italic">The Vision (2016)</h4>
-              <p className="text-stone-600 leading-relaxed text-lg">
-                It began in a small, sun-drenched studio in the arts district. Our founder, James, spent months mapping the molecular changes of coffee beans during the roasting process. The goal was to isolate the exact moment when a bean reaches its maximum expressive potential.
-              </p>
-              <div className="rounded-2xl overflow-hidden shadow-xl aspect-video my-8 grayscale hover:grayscale-0 transition-all duration-1000">
-                <LazyImage 
-                  src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Coffee Roasting" 
-                  className="w-full h-full"
-                />
-              </div>
-              <p className="text-stone-600 leading-relaxed text-lg">
-                We believe that coffee is a bridge between the wild earth and our internal calm. This philosophy—**Purity in Process**—governs everything we do today.
-              </p>
-            </div>
-            <div className="space-y-8">
-              <h4 className="text-2xl font-serif text-cafe-brown italic">The Perfect Pour</h4>
-              <p className="text-stone-600 leading-relaxed text-lg">
-                As we grew from a small popup to our current space, our journey was defined by a search for the "perfect pour." This meant traveling to high-altitude estates to find farmers who shared our obsessive attention to detail.
-              </p>
-              <div className="rounded-2xl overflow-hidden shadow-xl aspect-[4/5] my-8">
-                <LazyImage 
-                  src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Precision Brewing" 
-                  className="w-full h-full"
-                />
-              </div>
-              <p className="text-stone-600 leading-relaxed text-lg">
-                Sample Cafe is more than a destination; it's the culmination of years of experimentation and a promise to always honor the humble bean.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Best Sellers Carousel Section */}
         <div className="mb-32 reveal-on-scroll bg-white/60 backdrop-blur-md rounded-[3rem] p-8 md:p-20 relative shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white overflow-hidden min-h-[600px] flex items-center">
-          {/* Background decoration */}
           <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-cafe-brown/5 rounded-full blur-3xl pointer-events-none"></div>
           
-          <div className="container mx-auto relative z-10">
+          <div className="container mx-auto relative z-10 w-full">
             <div className="flex flex-col md:flex-row items-center gap-16 lg:gap-24">
-              <div className={`md:w-1/2 space-y-8 transition-all duration-700 ease-in-out ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+              <div className={`md:w-1/2 space-y-8 transition-all duration-500 ease-out ${isAnimating ? 'opacity-0 translate-y-4 blur-sm' : 'opacity-100 translate-y-0 blur-0'}`}>
                 <div className="inline-flex items-center gap-4">
                   <div className="w-12 h-[1px] bg-cafe-brown"></div>
                   <span className="text-cafe-brown font-bold uppercase text-xs tracking-[0.5em]">Curated Favourites</span>
@@ -266,7 +227,7 @@ const About: React.FC = () => {
               </div>
               
               <div className="md:w-1/2 flex justify-center relative w-full group">
-                <div className={`relative w-full max-w-[420px] aspect-square rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 scale-[0.98] blur-md' : 'opacity-100 scale-100 blur-0'}`}>
+                <div className="relative w-full max-w-[420px] aspect-square rounded-[2rem] overflow-hidden shadow-2xl bg-stone-50">
                   <LazyImage 
                     src={bestSellers[displayIndex].img} 
                     alt={bestSellers[displayIndex].name}
@@ -275,7 +236,6 @@ const About: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-cafe-green/40 via-transparent to-transparent opacity-60"></div>
                 </div>
                 
-                {/* Floating badge */}
                 <div className="absolute -bottom-6 -right-6 md:-right-8 bg-white px-8 py-6 rounded-2xl shadow-2xl border border-stone-50 z-20 hidden sm:block animate-bounce-slow">
                    <p className="text-cafe-green font-bold text-xs uppercase tracking-[0.2em] mb-1">House Pick</p>
                    <p className="text-cafe-brown font-serif italic">Fresh Daily</p>

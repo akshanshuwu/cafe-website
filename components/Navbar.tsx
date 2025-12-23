@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 interface NavbarProps {
@@ -9,7 +8,7 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
   const [activeSection, setActiveSection] = useState<string>('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Sections that have a dark background (Hero and Features)
+  // Home and features are dark sections
   const darkSections = ['home', 'features'];
   const isDarkTheme = darkSections.includes(activeSection);
 
@@ -24,7 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '-30% 0px -60% 0px', // More aggressive margin for mobile
+      rootMargin: '-40% 0px -40% 0px', // Balanced margin to prevent flickering active states
       threshold: 0
     };
 
@@ -63,19 +62,12 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
 
   const getTextColor = () => {
     if (isMenuOpen) return 'text-white';
-    
-    // When the user has scrolled down
     if (isScrolled) {
-      // Use white text if we are currently over a dark background section (Home or Features)
-      // Use green text if we are over any other (light) section
       return isDarkTheme ? 'text-white' : 'text-cafe-green';
     }
-
-    // Default state: Transparent navbar at the top of the page (Hero section)
     return 'text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]';
   };
 
-  // Dedicated function for the hamburger bars to ensure color is always solid
   const getHamburgerBg = () => {
     if (isMenuOpen) return 'bg-white';
     if (!isScrolled) return 'bg-white shadow-[0_2px_4px_rgba(0,0,0,0.5)]';
@@ -93,7 +85,6 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
             sample cafe
           </button>
           
-          {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-10 items-center">
             {navItems.map((item) => (
               <button
@@ -123,7 +114,6 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
             </button>
           </div>
 
-          {/* Mobile Toggle Button */}
           <button 
             className="md:hidden flex flex-col justify-center items-end gap-1.5 w-10 h-10 focus:outline-none z-[110]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -136,11 +126,10 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
         </div>
       </nav>
 
-      {/* Mobile Overlay */}
       <div className={`fixed inset-0 bg-cafe-green z-[90] transition-all duration-700 cubic-bezier(0.77, 0, 0.175, 1) md:hidden flex flex-col items-center justify-center space-y-10 ${
         isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
       }`}>
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => handleNavClick(item.id)}
