@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Menu from './components/Menu';
-import Gallery from './components/Gallery';
-import Features from './components/Features';
-import Timings from './components/Timings';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import Navbar from './components/Navbar.tsx';
+import Hero from './components/Hero.tsx';
+import About from './components/About.tsx';
+import Menu from './components/Menu.tsx';
+import Gallery from './components/Gallery.tsx';
+import Features from './components/Features.tsx';
+import Timings from './components/Timings.tsx';
+import Contact from './components/Contact.tsx';
+import Footer from './components/Footer.tsx';
 
 const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -17,14 +17,13 @@ const App: React.FC = () => {
     const shell = document.getElementById('loading-shell');
     if (shell) {
       shell.classList.add('hidden');
-      setTimeout(() => shell.remove(), 1000); // Cleanup after fade
     }
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    // 2. Setup Scroll Reveal with safer defaults
+    // 2. Setup Scroll Reveal
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {

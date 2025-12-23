@@ -34,7 +34,7 @@
       .text-cafe-green { color: #1B3022; }
       .bg-cafe-green { background-color: #1B3022; }
 
-      /* Safe Reveal Logic: Elements are visible by default */
+      /* Safe Reveal Logic */
       .reveal-on-scroll {
         opacity: 1;
         transition: opacity 0.8s cubic-bezier(0.2, 1, 0.3, 1), transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
@@ -85,9 +85,19 @@
   }
 }
 </script>
+
+    <script>
+      // FAILSAFE: Hide the loading shell after 2 seconds no matter what happens with React
+      setTimeout(function() {
+        var shell = document.getElementById('loading-shell');
+        if (shell && !shell.classList.contains('hidden')) {
+          shell.classList.add('hidden');
+          console.warn('Loading shell removed by failsafe.');
+        }
+      }, 2000);
+    </script>
   </head>
   <body class="bg-cafe-beige text-stone-800">
-    <!-- Simplified Loading Shell -->
     <div id="loading-shell">
       <div class="shell-logo">sample cafe</div>
       <div class="shell-spinner"></div>
